@@ -1,7 +1,7 @@
 resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   name                  = "myVM"
-  location              = azurerm_resource_group.rg.location
-  resource_group_name   = azurerm_resource_group.rg.name
+  location              = var.resource_group_location
+  resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.my_terraform_nic.id]
   size                  = "Standard_DS1_v2"
 
@@ -23,10 +23,10 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
 
   admin_ssh_key {
     username   = var.username
-    public_key = azapi_resource_action.ssh_public_key_gen.output.publicKey
+    public_key = var.ssh_public_key
   }
 
   boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
+    storage_account_uri = var.storage_account_uri
   }
 }

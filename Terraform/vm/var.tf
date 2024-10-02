@@ -7,3 +7,30 @@ variable "username" {
 }
 
 
+
+variable "resource_group_name" {
+  description = "The name of the resource group to use"
+  type        = string
+
+}
+
+variable "resource_group_location" {
+  description = "The location of the resource group"
+  type        = string
+}
+
+variable "resource_group_id" {
+  description = "The ID of the resource group to use"
+  type        = string
+}
+
+// modules/vm/variables.tf
+variable "ssh_public_key" {
+  description = "The public SSH key to use for the VM"
+  type        = string
+}
+
+variable "storage_account_uri" {
+  description = "The URI of the storage account for boot diagnostics"
+  type        = string
+}
