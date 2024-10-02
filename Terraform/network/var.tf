@@ -18,3 +18,9 @@ variable "username" {
   default     = "azureadmin"
 }
 
+variable "resource_group_name" {
+  type        = string
+  description = "Demo resource group."
+  default     = "Demo_resource_group"
+}
+
