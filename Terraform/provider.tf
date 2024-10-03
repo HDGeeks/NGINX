@@ -49,17 +49,21 @@ output "storage_account_uri" {
 
 module "vm" {
   source = "./vm"
-  depends_on = [module.network,module.storage,module.ssh]
+
   resource_group_id = module.network.resource_group_id
   resource_group_location = module.network.resource_group_location
   resource_group_name = module.network.resource_group_name
   ssh_public_key = module.ssh.ssh_public_key
-  storage_account_uri = module.ssh.storage_account_uri
+  storage_account_uri = module.storage.storage_account_uri
+  vm_public_ip = module.network.public_ip
+  network_interface_id = module.network.network_interface_id 
+  depends_on = [ module.network , module.ssh]
+ 
 }
 
 module "storage" {
   source = "./storage"
-  depends_on = [module.vm,module.network]
+ 
   resource_group_id = module.network.resource_group_id
   resource_group_location = module.network.resource_group_location
   resource_group_name = module.network.resource_group_name
@@ -67,14 +71,11 @@ module "storage" {
 
 module "ssh" {
   source = "./ssh"
-  depends_on = [module.network]
+
   resource_group_location = module.network.resource_group_location
   resource_group_name = module.network.resource_group_name
   resource_group_id = module.network.resource_group_id
-
-
-
-
-
+  vm_public_ip = module.network.public_ip
+  depends_on = [ module.network ]
 
 }

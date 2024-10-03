@@ -34,3 +34,16 @@ variable "storage_account_uri" {
   description = "The URI of the storage account for boot diagnostics"
   type        = string
 }
+
+variable "vm_public_ip" {
+  description = "The public IP address of the VM"
+  type        = string
+}
+
+# vm/variables.tf
+variable "network_interface_id" {
+  description = "The ID of the network interface for the VM"
+  type        = string
+}
+
+
