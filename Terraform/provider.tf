@@ -26,31 +26,6 @@ module "network" {
   source = "./network"
 }
 
-output "network_rg_name" {
-  value = module.network.resource_group_name
-}
-
-output "network_rg_location" {
-  value = module.network.resource_group_location
-}
-output "network_rg_id" {
-  value = module.network.resource_group_id  
-}
-
-output "ssh_public_key" {
-  value = module.ssh.ssh_public_key  # Output the SSH public key for reference
-}
-
-output "storage_account_uri" {
-  value = module.storage.storage_account_uri  # Output the storage account URI for reference
-}
-
-output "vm_public_ip" {
-  value = module.network.public_ip
-}
-
-
-
 module "vm" {
   source = "./vm"
 

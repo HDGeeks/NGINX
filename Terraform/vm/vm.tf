@@ -18,7 +18,7 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
     version   = "latest"
   }
 
-  computer_name  = "hostname"
+  computer_name  = "nginx_server"
   admin_username = var.username
 
   admin_ssh_key {
