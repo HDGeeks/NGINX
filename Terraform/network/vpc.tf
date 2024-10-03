@@ -21,7 +21,7 @@ resource "azurerm_public_ip" "my_vm_public_ip" {
   name                = "myPublicIP"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 }
 
 resource "azurerm_network_security_group" "ssh_and_http_for_vm" {
@@ -65,4 +65,10 @@ resource "azurerm_network_interface" "my_terraform_nic" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.my_vm_public_ip.id
   }
+}
+
+
+resource "azurerm_network_interface_security_group_association" "associate_nic_with_sg" {
+  network_interface_id      = azurerm_network_interface.my_terraform_nic.id
+  network_security_group_id = azurerm_network_security_group.ssh_and_http_for_vm.id
 }

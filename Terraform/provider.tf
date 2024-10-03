@@ -45,6 +45,10 @@ output "storage_account_uri" {
   value = module.storage.storage_account_uri  # Output the storage account URI for reference
 }
 
+output "vm_public_ip" {
+  value = module.network.public_ip
+}
+
 
 
 module "vm" {

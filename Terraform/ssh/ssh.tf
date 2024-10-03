@@ -20,6 +20,7 @@ resource "azapi_resource_action" "ssh_public_key_gen" {
 }
 
 resource "null_resource" "ssh_key_setup" {
+ 
   provisioner "local-exec" {
     command = <<EOT
       # Create the PEM file with the private key
