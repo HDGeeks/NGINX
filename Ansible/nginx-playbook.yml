@@ -1,0 +1,48 @@
+# @format
+---
+- name: Install and Configure Nginx on Ubuntu
+  hosts: azure
+  become: true  # Enables sudo (privilege escalation) for all tasks
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure Nginx is listening on port 80
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: '^\s*listen'
+        line: 'listen 80 default_server;'
+        state: present
+      notify: Restart Nginx  # Notify handler if this changes
+
+    - name: Start and enable Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Remove existing index.html if it exists
+      file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: Deploy custom index.html to Nginx
+      copy:
+        src: files/index.html  # Separate index.html in the 'files' directory for best practices
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
