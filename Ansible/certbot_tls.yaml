@@ -23,19 +23,21 @@
 
 
   
+  
     - name: Obtain SSL certificate using Certbot without email and disable renewal notifications
       command: >
         sudo certbot --nginx 
         -d cgi-vm-demo.germanywestcentral.cloudapp.azure.com
-        -d www.cgi-vm-demo.germanywestcentral.cloudapp.azure.com
-        --non-interactive  
-        --agree-tos  
-        --register-unsafely-without-email  
-        --no-eff-email  # Disable
+        -d cgi-vm-demo.germanywestcentral.cloudapp.azure.com
+        --non-interactive
+        --agree-tos
+        --register-unsafely-without-email
+        --no-eff-email
       register: certbot_output
       retries: 3  # Retry if it fails
       delay: 10  # Delay between retries
       until: certbot_output.rc == 0  # Proceed only if the command succeeds
+
 
 
 
