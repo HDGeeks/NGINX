@@ -1,0 +1,67 @@
+---
+- hosts: azure
+  become: yes
+  tasks:
+
+    - name: Gather facts (Ensures system facts are available)
+      setup:
+
+    - name: Stop Nginx
+      service:
+        name: nginx
+        state: stopped
+      ignore_errors: yes  # In case Nginx is not running or installed
+
+    - name: Uninstall Nginx and related packages using apt
+      apt:
+        name:
+          - nginx
+          - nginx-common
+        state: absent
+        purge: yes  # Ensure it purges associated configuration files
+
+    - name: Remove unnecessary packages after Nginx removal
+      apt:
+        name: "*"
+        state: latest
+        autoremove: yes
+
+    - name: Remove Nginx configuration and data directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/nginx
+        - /var/www/html
+        - /var/www/letsencrypt
+        - /var/log/nginx
+        - /usr/share/nginx
+
+    - name: Remove Let's Encrypt files and certificates
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/letsencrypt/live/cgi-vm-demo.germanywestcentral.cloudapp.azure.com
+        - /etc/letsencrypt/renewal/cgi-vm-demo.germanywestcentral.cloudapp.azure.com.conf
+        - /etc/letsencrypt/archive/cgi-vm-demo.germanywestcentral.cloudapp.azure.com
+        - /var/log/letsencrypt
+        - /etc/letsencrypt/live/cgi-vm-demo.germanywestcentral.cloudapp.azure.com-0001
+        - /etc/letsencrypt/renewal/cgi-vm-demo.germanywestcentral.cloudapp.azure.com-0001.conf
+        - /etc/letsencrypt/archive/cgi-vm-demo.germanywestcentral.cloudapp.azure.com-0001
+
+    - name: Clean up any residual Nginx or Certbot systemd services
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /lib/systemd/system/nginx.service
+        - /lib/systemd/system/certbot.service
+        - /etc/systemd/system/nginx.service
+        - /etc/systemd/system/certbot.service
+      ignore_errors: yes
+
+    - name: Reload systemd daemon to reflect removed services
+      command: systemctl daemon-reload
+
+   

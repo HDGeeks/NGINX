@@ -1,0 +1,45 @@
+---
+- name: Uninstall Certbot and remove related files
+  hosts: azure
+  become: yes  # Run tasks with elevated privileges
+
+  tasks:
+    - name: Stop Certbot service if running
+      service:
+        name: certbot
+        state: stopped
+      ignore_errors: yes  # Ignore if the service is not installed
+
+    - name: Uninstall Certbot and related packages
+      apt:
+        name:
+          - certbot
+          - python3-certbot-nginx
+          - python3-certbot
+        state: absent
+        purge: yes  # Remove configuration files
+
+    - name: Remove Let's Encrypt and Certbot configuration and certificate files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/letsencrypt  # Remove the main Let's Encrypt directory
+        - /var/log/letsencrypt  # Remove Let's Encrypt logs
+        - /etc/systemd/system/certbot.service  # Remove Certbot systemd service
+        - /etc/systemd/system/certbot.timer  # Remove Certbot systemd timer
+        - /usr/local/bin/certbot  # Remove Certbot executable if installed manually
+
+    - name: Reload systemd to apply service changes
+      command: systemctl daemon-reload
+
+    - name: Ensure no Certbot processes are running
+      shell: |
+        pkill -f certbot || true
+      ignore_errors: yes  # Ignore if no Certbot processes are found
+
+    - name: Remove Certbot cron jobs
+      cron:
+        name: "Certbot automatic renewal"
+        state: absent
+      ignore_errors: yes  # Ignore if no cron jobs are found

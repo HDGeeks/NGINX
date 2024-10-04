@@ -1,0 +1,78 @@
+# @format
+---
+- name: Install, Configure Nginx, and Prepare for SSL
+  hosts: azure
+  become: true  # Enables sudo (privilege escalation) for all tasks
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start and enable Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Remove existing index.html if it exists
+      file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: Deploy custom index.html to Nginx
+      copy:
+        src: files/index.html  # Make sure this file exists in the 'files' directory
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+
+
+    - name: Configure Nginx to handle Let's Encrypt challenge
+      copy:
+        dest: /etc/nginx/sites-available/default
+        content: |
+         server {
+           listen  80 default_server;
+           server_name cgi-vm-demo.germanywestcentral.cloudapp.azure.com;
+
+           location ~ /\.well-known/acme-challenge/ {
+               allow all;
+               root /var/www/letsencrypt;
+               try_files $uri =404;
+               break;
+           }
+
+           
+           location / {
+              return 301 https://$host$request_uri;
+           }
+         }
+      notify: Restart Nginx
+
+    - name: Ensure /var/www/letsencrypt directory exists for Certbot challenges
+      file:
+        path: /var/www/letsencrypt
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Start and enable Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

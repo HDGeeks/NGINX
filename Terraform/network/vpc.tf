@@ -22,6 +22,12 @@ resource "azurerm_public_ip" "my_vm_public_ip" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
+  domain_name_label = "cgi-vm-demo"  # Use a valid DNS label
+
+  
+  
+
+  
 }
 
 resource "azurerm_network_security_group" "ssh_and_http_for_vm" {
@@ -52,6 +58,18 @@ resource "azurerm_network_security_group" "ssh_and_http_for_vm" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  security_rule {
+  name                       = "HTTPS"
+  priority                   = 1003  # Ensure this is a unique priority
+  direction                  = "Inbound"
+  access                     = "Allow"
+  protocol                   = "Tcp"
+  source_port_range          = "*"  # Allow from any source port
+  destination_port_range     = "443"  # Destination port for HTTPS
+  source_address_prefix      = "*"  # Allow from any source IP
+  destination_address_prefix = "*"  # Allow to any destination IP
+}
+
 }
 
 resource "azurerm_network_interface" "my_terraform_nic" {

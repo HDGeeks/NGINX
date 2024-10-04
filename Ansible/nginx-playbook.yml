@@ -14,14 +14,6 @@
         name: nginx
         state: present
 
-    - name: Ensure Nginx is listening on port 80
-      lineinfile:
-        path: /etc/nginx/sites-available/default
-        regexp: '^\s*listen'
-        line: 'listen 80 default_server;'
-        state: present
-      notify: Restart Nginx  # Notify handler if this changes
-
     - name: Start and enable Nginx service
       service:
         name: nginx
@@ -41,8 +33,24 @@
         group: www-data
         mode: '0644'
 
+    - name: Make Nginx default configuration writable
+      file:
+        path: /etc/nginx/sites-enabled/default
+        mode: '0666'  # Change permissions to make it writable
+
+    - name: Ensure server_name is set in Nginx default configuration inside the server block
+      blockinfile:
+        path: /etc/nginx/sites-available/default
+        marker: "# {mark} MANAGED BY ANSIBLE"
+        insertafter: '^\\s*listen'  # Insert after the 'listen' directive inside the server block
+        block: |
+          server_name cgi-vm-demo.germanywestcentral.cloudapp.azure.com;
+      notify: Restart Nginx
+
+
+
   handlers:
-    - name: Restart Nginx
-      service:
-        name: nginx
-        state: restarted
+      - name: Restart Nginx
+        service:
+          name: nginx
+          state: restarted

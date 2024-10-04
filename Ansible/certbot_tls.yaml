@@ -1,0 +1,56 @@
+# @format
+---
+- name: Configure Nginx with Let's Encrypt SSL Certificate
+  hosts: azure
+  become: true  # Enables sudo (privilege escalation) for all tasks
+
+  tasks:
+
+    - name: Install OpenSSL and Certbot
+      apt:
+        name:
+          - openssl
+          - certbot
+          - python3-certbot-nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure Nginx is running before attempting Certbot
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+
+  
+    - name: Obtain SSL certificate using Certbot without email and disable renewal notifications
+      command: >
+        sudo certbot --nginx 
+        -d cgi-vm-demo.germanywestcentral.cloudapp.azure.com
+        -d www.cgi-vm-demo.germanywestcentral.cloudapp.azure.com
+        --non-interactive  
+        --agree-tos  
+        --register-unsafely-without-email  
+        --no-eff-email  # Disable
+      register: certbot_output
+      retries: 3  # Retry if it fails
+      delay: 10  # Delay between retries
+      until: certbot_output.rc == 0  # Proceed only if the command succeeds
+
+
+
+    - name: Check Certbot output
+      debug:
+        var: certbot_output
+
+    - name: Restart Nginx to apply changes
+      service:
+        name: nginx
+        state: restarted
+      when: certbot_output is defined and certbot_output.rc == 0  # Restart only if Certbot succeeded
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
