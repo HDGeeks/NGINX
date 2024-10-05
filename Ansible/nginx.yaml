@@ -38,7 +38,7 @@
         content: |
           server {
             listen  80 default_server;
-            server_name cgi-vm-demo.germanywestcentral.cloudapp.azure.com;
+            server_name cgi-vm-demo1.germanywestcentral.cloudapp.azure.com;
 
             location / {
                 root /var/www/html;  
