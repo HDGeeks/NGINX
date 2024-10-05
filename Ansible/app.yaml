@@ -1,6 +1,6 @@
 ---
-- name: Install Docker and Run a Web Application in a Separate Nginx Container
-  hosts: azure # Change this to your target host or group
+- name: Install Docker and Docker Compose, then run a Flask web application
+  hosts: azure # Replace with your actual host or group
   become: true  # Use sudo to perform administrative tasks
 
   tasks:
@@ -41,32 +41,27 @@
         state: started
         enabled: true
 
+    - name: Install Docker Compose
+      shell: |
+        curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &&
+        chmod +x /usr/local/bin/docker-compose
+      args:
+        creates: /usr/local/bin/docker-compose
+
     - name: Create directory for web application files
       file:
-        path: /home/ubuntu/my-web-app
+        path: /home/ubuntu/application
         state: directory
 
-    - name: Create index.html for the web application
-      copy:
-        dest: /home/ubuntu/my-web-app/index.html
-        content: |
-          <!DOCTYPE html>
-          <html>
-          <head>
-          <title>My Web App</title>
-          </head>
-          <body>
-          <h1>Hello from Docker Container!</h1>
-          </body>
-          </html>
+    - name: Clone the web application repository
+      git:
+        repo: https://github.com/HDGeeks/web_app.git
+        dest: /home/ubuntu/application/web_app
+        clone: yes
+        update: yes
 
-    - name: Run Nginx container with volume mapping on port 8080
-      docker_container:
-        name: my-web-app
-        image: nginx
-        state: started
-        restart_policy: always
-        published_ports:
-          - "8080:80"  # Docker container listens on port 80, mapped to host's port 8080
-        volumes:
-          - /home/ubuntu/my-web-app:/usr/share/nginx/html
+    - name: Change to the correct directory and run docker-compose up
+      shell: |
+        cd /home/ubuntu/application/web_app && docker-compose up -d
+      args:
+        chdir: /home/ubuntu/application/web_app
