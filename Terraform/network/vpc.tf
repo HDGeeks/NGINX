@@ -22,12 +22,8 @@ resource "azurerm_public_ip" "my_vm_public_ip" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
-  domain_name_label = "cgi-vm-demo"  # Use a valid DNS label
+  domain_name_label = var.domain_name_label
 
-  
-  
-
-  
 }
 
 resource "azurerm_network_security_group" "ssh_and_http_for_vm" {

@@ -20,3 +20,8 @@ variable "resource_group_name" {
   default     = "Demo_resource_group"
 }
 
+variable "domain_name_label" {
+  type        = string
+  description = "The dns label for the ipv4"
+  default     = "cgi-vm-demo1"
+}
