@@ -1,0 +1,72 @@
+---
+- name: Install Docker and Run a Web Application in a Separate Nginx Container
+  hosts: azure # Change this to your target host or group
+  become: true  # Use sudo to perform administrative tasks
+
+  tasks:
+    - name: Update APT package list
+      apt:
+        update_cache: yes
+
+    - name: Install required packages for Docker
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Dockers official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Ensure Docker is started and enabled
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Create directory for web application files
+      file:
+        path: /home/ubuntu/my-web-app
+        state: directory
+
+    - name: Create index.html for the web application
+      copy:
+        dest: /home/ubuntu/my-web-app/index.html
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+          <title>My Web App</title>
+          </head>
+          <body>
+          <h1>Hello from Docker Container!</h1>
+          </body>
+          </html>
+
+    - name: Run Nginx container with volume mapping
+      docker_container:
+        name: my-web-app
+        image: nginx
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8080:80"  # Change this port if needed to avoid conflicts
+        volumes:
+          - /home/ubuntu/my-web-app:/usr/share/nginx/html

@@ -1,0 +1,12 @@
+version: '3.8'  # Specify the Docker Compose version
+
+services:
+  flask-app:
+    build:
+      context: .  # Use current directory for build context
+    volumes:
+      -  ~/my_flask_app/static:/web_app/static
+    ports:
+      - "8080:8080"  # Expose port 8080 on the host
+    environment:
+      FLASK_ENV: development  # Set Flask environment to development for debugging
