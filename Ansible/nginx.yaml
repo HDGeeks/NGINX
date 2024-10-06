@@ -54,6 +54,17 @@
           }
       notify: Restart Nginx
 
+    - name: Ensure server_names_hash_bucket_size is set to 128 in Nginx config
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: 'server_names_hash_bucket_size'
+        line: '    server_names_hash_bucket_size 128;'
+        state: present
+        insertafter: 'http {'
+      notify:
+        - Reload Nginx
+
+
     - name: Ensure /var/www/letsencrypt directory exists for Certbot challenges
       file:
         path: /var/www/letsencrypt
