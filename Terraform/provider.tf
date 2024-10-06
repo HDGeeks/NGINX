@@ -60,4 +60,6 @@ module "ssh" {
 
 }
 
-
+output "full_dns_label" {
+  value = module.network.full_dns_label
+}

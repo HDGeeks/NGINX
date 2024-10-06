@@ -17,7 +17,7 @@
     - name: Append the local web_app running in container in to the  Nginx location to the existing server block
       lineinfile:
         path: /etc/nginx/sites-available/default
-        insertafter: 'server_name cgi-vm-demo3.germanywestcentral.cloudapp.azure.com;'
+        insertafter: '{{ ansible_host }};'
         line: |
           # Location for the Docker Nginx Container
           location /app {

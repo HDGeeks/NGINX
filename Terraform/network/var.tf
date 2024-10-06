@@ -23,5 +23,5 @@ variable "resource_group_name" {
 variable "domain_name_label" {
   type        = string
   description = "The dns label for the ipv4"
-  default     = "cgi-vm-demo3"
+  default     = "cgi-vm-demo4"
 }

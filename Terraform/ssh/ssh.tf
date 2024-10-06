@@ -72,9 +72,10 @@ resource "null_resource" "ssh_key_setup_for_dns_label" {
 
 
 # Create a dynamic Ansible inventory
-resource "local_file" "ansible_inventory" {
-  filename = "Users/hd/ansible/hosts.yaml"  # Replace 'username' with your actual username
-  content  = <<EOT
+resource "null_resource" "ansible_inventory" {
+  provisioner "local-exec" {
+    command = <<EOT
+      cat <<EOF > ~/ansible/hosts.yaml
 ---
 all:
   children:
@@ -92,7 +93,11 @@ all:
       hosts:
         ${var.domain_name_label}:
           ansible_user: "azureadmin"
-EOT
+EOF
+    EOT
+  }
+
+  depends_on = [null_resource.ssh_key_setup_for_dns_label]
 }
 
 
