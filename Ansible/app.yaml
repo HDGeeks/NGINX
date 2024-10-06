@@ -1,7 +1,7 @@
 ---
 - name: Install Docker and Docker Compose, then run a Flask web application
-  hosts: azure # Replace with your actual host or group
-  become: true  # Use sudo to perform administrative tasks
+  hosts: azure 
+  become: true  
 
   tasks:
     - name: Update APT package list
@@ -17,7 +17,7 @@
           - software-properties-common
         state: present
 
-    - name: Add Docker’s official GPG key
+    - name: Add Dockers official GPG key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present

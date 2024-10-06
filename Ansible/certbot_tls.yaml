@@ -1,8 +1,8 @@
-# @format
+
 ---
 - name: Configure Nginx with Let's Encrypt SSL Certificate
   hosts: azure
-  become: true  # Enables sudo (privilege escalation) for all tasks
+  become: true
 
   tasks:
 

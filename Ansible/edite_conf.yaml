@@ -1,7 +1,7 @@
 ---
 - name: Append Docker Nginx location to existing configuration
   hosts: azure
-  become: yes  # Use sudo
+  become: yes 
   tasks:
     - name: Ensure nginx is installed
       apt:
@@ -14,7 +14,7 @@
         dest: /etc/nginx/sites-available/default.bak
         remote_src: yes
 
-    - name: Append Docker Nginx location to the existing server block
+    - name: Append the local web_app running in container in to the  Nginx location to the existing server block
       lineinfile:
         path: /etc/nginx/sites-available/default
         insertafter: 'server_name cgi-vm-demo1.germanywestcentral.cloudapp.azure.com;'
