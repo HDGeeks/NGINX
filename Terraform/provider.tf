@@ -55,6 +55,7 @@ module "ssh" {
   resource_group_name = module.network.resource_group_name
   resource_group_id = module.network.resource_group_id
   vm_public_ip = module.network.public_ip
+  domain_name_label = module.network.full_dns_label
   depends_on = [ module.network ]
 
 }

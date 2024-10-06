@@ -18,6 +18,15 @@ output "network_interface_id" {
   value = azurerm_network_interface.my_terraform_nic.id
 }
 
+output "full_dns_label" {
+  value = "${var.domain_name_label}.germanywestcentral.cloudapp.azure.com"
+}
+
+
+
+
+
+
 
 
 
