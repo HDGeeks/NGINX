@@ -39,7 +39,7 @@ output "vnet_location" {
   value = azurerm_virtual_network.demo_virtual_network.location
 }
 
-# Outputs
+
 output "demo_subnet_id" {
   value = azurerm_subnet.demo_subnet.id
 }
