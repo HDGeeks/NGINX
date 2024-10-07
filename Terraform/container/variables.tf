@@ -18,11 +18,11 @@ variable "container_name_prefix" {
   default     = "aci"
 }
 
-# variable "image" {
-#   type        = string
-#   description = "Container image to deploy. Should be of the form repoName/imagename:tag for images stored in public Docker Hub, or a fully qualified URI for other registries. Images from private registries require additional registry credentials."
-#   default     = "${azurerm_container_registry.my_demo_acr.login_server}/my-app:latest"
-# }
+variable "image" {
+  type        = string
+  description = "Container image to deploy. Should be of the form repoName/imagename:tag for images stored in public Docker Hub, or a fully qualified URI for other registries. Images from private registries require additional registry credentials."
+  
+}
 
 variable "port" {
   type        = number
@@ -65,6 +65,17 @@ variable "container-subnets" {
 }
 
 variable "resource_group_name" {
+  type        = string
+  description = "The number of CPU cores to allocate to the container."
+
+}
+
+variable "acr_user" {
+  type        = string
+  description = "The number of CPU cores to allocate to the container."
+
+}
+variable "acr_password" {
   type        = string
   description = "The number of CPU cores to allocate to the container."
 

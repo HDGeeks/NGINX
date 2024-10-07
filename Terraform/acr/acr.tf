@@ -4,4 +4,12 @@ resource "azurerm_container_registry" "acr" {
   location            = var.resource_group_location
   sku                 = "Basic"
   admin_enabled       = true
+
+
+   identity {
+    type = "UserAssigned"
+    identity_ids = [
+      var.principal
+    ]
+  }
 }
