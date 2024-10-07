@@ -21,6 +21,9 @@ provider "azurerm" {
   features {}
 }
 
+# Data source to get the current Azure client configuration
+data "azurerm_client_config" "current" {}
+
 # Include other modules or resources
 module "network" {
   source = "./network"
@@ -67,6 +70,31 @@ module "container" {
   container-subnets = module.network.demo_subnet_containers_id
   resource_group_name = module.network.resource_group_name
 
+  
+}
+
+module "key" {
+  source = "./key"
+
+  resource_group_location = module.network.resource_group_location
+  resource_group_name = module.network.resource_group_name
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = module.user.user_identity_principal_id
+}
+
+module "user" {
+  source = "./user"
+  resource_group_location = module.network.resource_group_location
+  resource_group_name = module.network.resource_group_name
+  acr_id = module.acr.acr_id
+  key_vault_id = module.key.key_vault_id
+  
+}
+
+module "acr" {
+  source = "./acr"
+  resource_group_name = module.network.resource_group_name
+  resource_group_location = module.network.resource_group_location
   
 }
 

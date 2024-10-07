@@ -11,6 +11,16 @@ resource "azurerm_container_registry" "my-demo-acr" {
   location            = azurerm_resource_group.rg_container.location
   sku                 = "Basic"
   admin_enabled       = true
+  
+
+   identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.principal_identity.id
+    ]
+  }
+
+  
 }
 
 # Create container instances for both environments
