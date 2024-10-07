@@ -65,6 +65,7 @@ module "container" {
   resource_group_location = module.network.resource_group_location
   network_profile_id = module.network.network_profile_id
   container-subnets = module.network.demo_subnet_containers_id
+  resource_group_name = module.network.resource_group_name
 
   
 }

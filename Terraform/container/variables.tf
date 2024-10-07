@@ -63,3 +63,9 @@ variable "container-subnets" {
   description = "The number of CPU cores to allocate to the container."
 
 }
+
+variable "resource_group_name" {
+  type        = string
+  description = "The number of CPU cores to allocate to the container."
+
+}
