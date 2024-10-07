@@ -60,6 +60,13 @@ module "ssh" {
 
 }
 
+module "container" {
+  source = "./container"
+  resource_group_location = module.network.resource_group_location
+  
+  
+}
+
 output "full_dns_label" {
   value = module.network.full_dns_label
 }

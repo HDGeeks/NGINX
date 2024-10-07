@@ -23,6 +23,21 @@ output "full_dns_label" {
 }
 
 
+output "vnet_name" {
+  value = azurerm_virtual_network.demo_virtual_network.name
+}
+
+output "vnet_address_space" {
+  value = azurerm_virtual_network.demo_virtual_network.address_space
+}
+
+output "vnet_id" {
+  value = azurerm_virtual_network.demo_virtual_network.id
+}
+
+output "vnet_location" {
+  value = azurerm_virtual_network.demo_virtual_network.location
+}
 
 
 

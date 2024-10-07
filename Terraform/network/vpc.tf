@@ -3,22 +3,22 @@ resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
 }
 
-resource "azurerm_virtual_network" "my_terraform_network" {
-  name                = "myVnet"
+resource "azurerm_virtual_network" "demo_virtual_network" {
+  name                = "Demo-Vnet"
   address_space       = ["10.0.0.0/24"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-resource "azurerm_subnet" "my_terraform_subnet" {
-  name                 = "mySubnet"
+resource "azurerm_subnet" "demo_subnet" {
+  name                 = "Demo-Subnet"
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.my_terraform_network.name
+  virtual_network_name = azurerm_virtual_network.demo_virtual_network.name
   address_prefixes     = ["10.0.0.0/24"]
 }
 
 resource "azurerm_public_ip" "my_vm_public_ip" {
-  name                = "myPublicIP"
+  name                = "DemoPublicIP"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
@@ -75,7 +75,7 @@ resource "azurerm_network_interface" "my_terraform_nic" {
 
   ip_configuration {
     name                          = "my_nic_configuration"
-    subnet_id                     = azurerm_subnet.my_terraform_subnet.id
+    subnet_id                     = azurerm_subnet.demo_subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.my_vm_public_ip.id
   }

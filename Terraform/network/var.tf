@@ -1,7 +1,7 @@
 
 variable "resource_group_location" {
   type        = string
-  default     = "Germany West Central"  # Updated to a region in Germany
+  default     = "Germany West Central"  
   description = "Location of the resource group."
 }
 
@@ -23,5 +23,5 @@ variable "resource_group_name" {
 variable "domain_name_label" {
   type        = string
   description = "The dns label for the ipv4"
-  default     = "cgi-vm-demo4"
+  default     = "cgi-vm-demo5"
 }
