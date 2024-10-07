@@ -6,8 +6,8 @@ resource "azurerm_resource_group" "rg_container" {
   location = var.resource_group_location
 }
 
-# Azure Container Registry (ACR) - Equivalent to ECR in AWS
-resource "azurerm_container_registry" "acr" {
+# Azure Container Registry (ACR)
+resource "azurerm_container_registry" "my-demo-acr" {
   name                = "mydemoimagestore"
   resource_group_name = azurerm_resource_group.rg_container.name
   location            = azurerm_resource_group.rg_container.location
@@ -24,15 +24,18 @@ resource "azurerm_container_group" "staging" {
   location            = azurerm_resource_group.rg_container.location
   resource_group_name = azurerm_resource_group.rg_container.name
   os_type             = "Linux"
+  restart_policy = var.restart_policy
+  ip_address_type = "Public"
 
   container {
     name   = "staging-container"
     image  = "${azurerm_container_registry.acr.login_server}/my-app:latest"
-    cpu    = "0.5"
-    memory = "1.5"
+    cpu    = var.cpu_cores
+    memory = var.memory_in_gb
+   
 
     ports {
-      port     = 80
+      port     = var.port
       protocol = "TCP"
     }
 
@@ -46,7 +49,7 @@ resource "azurerm_container_group" "staging" {
   }
 
   # Assuming VPC networking
-  network_profile_id = module.my_terraform_network.id
+  network_profile_id = module.network
 }
 
 # Production Environment
@@ -55,12 +58,14 @@ resource "azurerm_container_group" "production" {
   location            = azurerm_resource_group.rg_container.location
   resource_group_name = azurerm_resource_group.rg_container.name
   os_type             = "Linux"
+  restart_policy      = var.restart_policy
+  ip_address_type     = "Public"
 
   container {
     name   = "production-container"
     image  = "${azurerm_container_registry.acr.login_server}/my-app:latest"
-    cpu    = "0.5"
-    memory = "1.5"
+    cpu    = var.cpu_cores
+    memory = var.memory_in_gb
 
     ports {
       port     = 80

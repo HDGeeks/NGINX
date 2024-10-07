@@ -39,6 +39,26 @@ output "vnet_location" {
   value = azurerm_virtual_network.demo_virtual_network.location
 }
 
+# Outputs
+output "demo_subnet_id" {
+  value = azurerm_subnet.demo_subnet.id
+}
+
+output "demo_subnet_containers_id" {
+  value = azurerm_subnet.demo_subnet_containers.id
+}
+
+output "container_network_profile_id" {
+  value = azurerm_network_profile.container_profile.id
+}
+
+output "container_network_profile_location" {
+  value = azurerm_network_profile.container_profile.location
+}
+
+output "container_network_profile_rg_name" {
+  value = azurerm_network_profile.container_profile.resource_group_name
+}
 
 
 

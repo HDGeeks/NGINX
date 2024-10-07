@@ -14,7 +14,39 @@ resource "azurerm_subnet" "demo_subnet" {
   name                 = "Demo-Subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.demo_virtual_network.name
-  address_prefixes     = ["10.0.0.0/24"]
+  address_prefixes     = ["10.0.0.0/25"]# First Half
+
+}
+
+resource "azurerm_subnet" "demo_subnet_containers" {
+  name                 = "containers-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.demo_virtual_network.name
+  address_prefixes     = ["10.0.0.128/25"] # Second half of the VNet
+
+   delegation {
+    name = "delegation-for-containers"
+
+    service_delegation {
+      name    = "Microsoft.ContainerInstance/containerGroups"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
+
+resource "azurerm_network_profile" "container-profile" {
+  name                = "demo-container-profile"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  container_network_interface {
+    name = "containers-nic"
+
+    ip_configuration {
+      name      = "container-ipconfig"
+      subnet_id = azurerm_subnet.demo_subnet_containers.id
+    }
+  }
 }
 
 resource "azurerm_public_ip" "my_vm_public_ip" {

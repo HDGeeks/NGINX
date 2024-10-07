@@ -10,3 +10,4 @@ output "staging_container_ip" {
 output "production_container_ip" {
   value = azurerm_container_group.production.ip_address
 }
+
