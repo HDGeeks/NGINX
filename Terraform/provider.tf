@@ -63,46 +63,11 @@ module "ssh" {
 
 }
 
-module "container" {
-  source = "./container"
-  resource_group_location = module.network.resource_group_location
-  network_profile_id = module.network.network_profile_id
-  container-subnets = module.network.demo_subnet_containers_id
-  resource_group_name = module.network.resource_group_name
-  acr_password = module.key.acr_admin_password_secret_id
-  acr_user = module.key.acr_admin_username_secret_id
-  image = module.acr.acr_login_server
- 
 
-  
-}
 
-module "key" {
-  source = "./key"
 
-  resource_group_location = module.network.resource_group_location
-  resource_group_name = module.network.resource_group_name
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = module.user.user_identity_principal_id
 
-}
 
-module "user" {
-  source = "./user"
-  resource_group_location = module.network.resource_group_location
-  resource_group_name = module.network.resource_group_name
-  acr_id = module.acr.acr_id
-  key_vault_id = module.key.key_vault_id
-  
-}
-
-module "acr" {
-  source = "./acr"
-  resource_group_name = module.network.resource_group_name
-  resource_group_location = module.network.resource_group_location
-  principal = module.user.user_identity_id
-  
-}
 
 output "full_dns_label" {
   value = module.network.full_dns_label
