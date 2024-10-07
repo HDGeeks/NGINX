@@ -26,12 +26,17 @@ resource "azurerm_container_group" "staging" {
   os_type             = "Linux"
   restart_policy = var.restart_policy
   ip_address_type = "Public"
+  network_profile_id = var.network_profile_id
+  
+  
+  
 
   container {
     name   = "staging-container"
     image  = "${azurerm_container_registry.acr.login_server}/my-app:latest"
     cpu    = var.cpu_cores
     memory = var.memory_in_gb
+    
    
 
     ports {
@@ -49,7 +54,7 @@ resource "azurerm_container_group" "staging" {
   }
 
   # Assuming VPC networking
-  network_profile_id = var.network_profile_id
+
 }
 
 # Production Environment
@@ -60,6 +65,9 @@ resource "azurerm_container_group" "production" {
   os_type             = "Linux"
   restart_policy      = var.restart_policy
   ip_address_type     = "Public"
+  network_profile_id = var.network_profile_id
+  
+  
 
   container {
     name   = "production-container"
@@ -81,6 +89,6 @@ resource "azurerm_container_group" "production" {
     environment = "production"
   }
 
-  # Assuming VPC networking
-  network_profile_id =var.network_profile_id
+  
+
 }

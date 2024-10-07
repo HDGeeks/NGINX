@@ -57,3 +57,9 @@ variable "network_profile_id" {
   description = "The number of CPU cores to allocate to the container."
 
 }
+
+variable "container-subnets" {
+  type        = string
+  description = "The number of CPU cores to allocate to the container."
+
+}

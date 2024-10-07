@@ -54,13 +54,7 @@ output "network_profile_id" {
   value = module.network.container_network_profile_id
 }
 
-output "container_network_profile_location" {
-  value = azurerm_network_profile.container_profile.location
-}
 
-output "container_network_profile_rg_name" {
-  value = azurerm_network_profile.container_profile.resource_group_name
-}
 
 
 
