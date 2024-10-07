@@ -48,8 +48,10 @@ output "demo_subnet_containers_id" {
   value = azurerm_subnet.demo_subnet_containers.id
 }
 
-output "container_network_profile_id" {
-  value = azurerm_network_profile.container_profile.id
+
+
+output "network_profile_id" {
+  value = module.network.container_network_profile_id
 }
 
 output "container_network_profile_location" {

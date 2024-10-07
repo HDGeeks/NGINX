@@ -49,7 +49,7 @@ resource "azurerm_container_group" "staging" {
   }
 
   # Assuming VPC networking
-  network_profile_id = module.network
+  network_profile_id = var.network_profile_id
 }
 
 # Production Environment
@@ -82,5 +82,5 @@ resource "azurerm_container_group" "production" {
   }
 
   # Assuming VPC networking
-  network_profile_id = module.network_profile_id
+  network_profile_id =var.network_profile_id
 }

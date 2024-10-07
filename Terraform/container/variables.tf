@@ -18,11 +18,11 @@ variable "container_name_prefix" {
   default     = "aci"
 }
 
-variable "image" {
-  type        = string
-  description = "Container image to deploy. Should be of the form repoName/imagename:tag for images stored in public Docker Hub, or a fully qualified URI for other registries. Images from private registries require additional registry credentials."
-  default     = "${azurerm_container_registry.acr.login_server}/my-app:latest"
-}
+# variable "image" {
+#   type        = string
+#   description = "Container image to deploy. Should be of the form repoName/imagename:tag for images stored in public Docker Hub, or a fully qualified URI for other registries. Images from private registries require additional registry credentials."
+#   default     = "${azurerm_container_registry.my_demo_acr.login_server}/my-app:latest"
+# }
 
 variable "port" {
   type        = number
@@ -50,4 +50,10 @@ variable "restart_policy" {
     condition     = contains(["Always", "Never", "OnFailure"], var.restart_policy)
     error_message = "The restart_policy must be one of the following: Always, Never, OnFailure."
   }
+}
+
+variable "network_profile_id" {
+  type        = string
+  description = "The number of CPU cores to allocate to the container."
+
 }
