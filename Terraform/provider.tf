@@ -73,3 +73,19 @@ module "container" {
 output "full_dns_label" {
   value = module.network.full_dns_label
 }
+
+output "current_tenant_id" {
+ value = module.container.current_tenant_id
+}
+
+output "current_object_id" {
+ value = module.container.current_object_id
+}
+
+output "current_client_id" {
+  value = module.container.current_client_id
+}
+output "principal_id_id" {
+  value = module.container.principal_id
+}
+
