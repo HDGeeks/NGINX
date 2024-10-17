@@ -1,0 +1,78 @@
+---
+- name: Manage NGINX Configuration
+  hosts: azure
+  become: true
+
+  tasks:
+    - name: Backup existing NGINX default configuration
+      copy:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-available/default.bak
+        remote_src: yes
+
+    - name: Configure NGINX for Docker Web App and Let's Encrypt Challenge
+      copy:
+        dest: /etc/nginx/sites-available/default
+        content: |
+          server {
+            listen  80 default_server;
+            server_name {{ ansible_host }};
+
+            location / {
+                root /var/www/html;
+                index index.html;
+            }
+
+            # Location for the Docker App Container
+            location /app {
+                rewrite ^/app/(.*) /$1 break;
+                proxy_pass http://localhost:5000;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+
+            # Handle Let's Encrypt ACME challenge
+            location ~ /\.well-known/acme-challenge/ {
+                allow all;
+                root /var/www/letsencrypt;
+                try_files $uri =404;
+                break;
+            }
+          }
+      notify: Restart Nginx
+
+    - name: Ensure /var/www/letsencrypt directory exists for Certbot challenges
+      file:
+        path: /var/www/letsencrypt
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Ensure server_names_hash_bucket_size is set to 128 in NGINX config
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: 'server_names_hash_bucket_size'
+        line: '    server_names_hash_bucket_size 128;'
+        state: present
+        insertafter: 'http {'
+
+    - name: Test NGINX configuration
+      command: nginx -t
+      register: nginx_test
+      changed_when: false
+
+    - name: Reload NGINX if configuration is valid
+      service:
+        name: nginx
+        state: reloaded
+      when: nginx_test.rc == 0
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

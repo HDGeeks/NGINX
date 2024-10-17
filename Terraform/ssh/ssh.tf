@@ -19,30 +19,30 @@ resource "azapi_resource_action" "ssh_public_key_gen" {
   response_export_values = ["publicKey", "privateKey"]
 }
 
-resource "null_resource" "ssh_key_setup_for_ipv4" {
+# resource "null_resource" "ssh_key_setup_for_ipv4" {
  
-  provisioner "local-exec" {
-    command = <<EOT
-      # Create the PEM file with the private key
-      echo "${azapi_resource_action.ssh_public_key_gen.output.privateKey}" > ~/.ssh/${random_pet.ssh_key_name.id}.pem
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       # Create the PEM file with the private key
+#       echo "${azapi_resource_action.ssh_public_key_gen.output.privateKey}" > ~/.ssh/${random_pet.ssh_key_name.id}.pem
       
-      # Set file permissions to 400 (read-only for owner)
-      chmod 400 ~/.ssh/${random_pet.ssh_key_name.id}.pem
+#       # Set file permissions to 400 (read-only for owner)
+#       chmod 400 ~/.ssh/${random_pet.ssh_key_name.id}.pem
 
-      # Define the SSH config file path
-      ssh_config_file=~/.ssh/config
+#       # Define the SSH config file path
+#       ssh_config_file=~/.ssh/config
 
-      # Check if the Host entry exists in the SSH config, otherwise append it
-      if ! grep -q "${random_pet.ssh_key_name.id}" $ssh_config_file; then
-        echo "Host ${var.vm_public_ip}" >> $ssh_config_file
-        echo "    Hostname ${var.vm_public_ip}" >> $ssh_config_file
-        echo "    Port 22" >> $ssh_config_file
-        echo "    User ${var.username}" >> $ssh_config_file
-        echo "    IdentityFile ~/.ssh/${random_pet.ssh_key_name.id}.pem" >> $ssh_config_file
-      fi
-    EOT
-  }
-}
+#       # Check if the Host entry exists in the SSH config, otherwise append it
+#       if ! grep -q "${random_pet.ssh_key_name.id}" $ssh_config_file; then
+#         echo "Host ${var.vm_public_ip}" >> $ssh_config_file
+#         echo "    Hostname ${var.vm_public_ip}" >> $ssh_config_file
+#         echo "    Port 22" >> $ssh_config_file
+#         echo "    User ${var.username}" >> $ssh_config_file
+#         echo "    IdentityFile ~/.ssh/${random_pet.ssh_key_name.id}.pem" >> $ssh_config_file
+#       fi
+#     EOT
+#   }
+# }
 
 resource "null_resource" "ssh_key_setup_for_dns_label" {
  
