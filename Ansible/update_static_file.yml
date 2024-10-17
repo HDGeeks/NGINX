@@ -1,0 +1,27 @@
+---
+- name: Ensure welcome.html file exists for web app
+  hosts: azure
+  become: true
+
+  tasks:
+    - name: Ensure the static directory exists
+      file:
+        path: /home/ubuntu/application/web_app/static
+        state: directory
+        mode: '0755'  
+
+    - name: Check if welcome.html exists
+      stat:
+        path: /home/ubuntu/application/web_app/static/welcome.html
+      register: welcome_file
+
+    - name: Create and deploy welcome.html to web app static folder
+      copy:
+        src: files/welcome.html  
+        dest: /home/ubuntu/application/web_app/static/welcome.html
+        mode: '0644' 
+      
+
+    - name: Notify user of successful update
+      debug:
+        msg: "The static file 'welcome.html' has been created and deployed to the web app."
